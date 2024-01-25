@@ -37,7 +37,7 @@
             android:fontFamily="@font/aclonica"
             android:text="@string/notepad"
             android:textSize="34sp"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="40dp"
     tools:context=".AddNoteActivity">
 
     <EditText
@@ -12,35 +11,41 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:autofillHints="@string/title"
+        android:background="@drawable/custom_edit_text"
         android:ems="10"
         android:hint="@string/title"
-        android:inputType="textPersonName"
+        android:padding="17dp"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:autofillHints="@string/title" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editTextMultiLine"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:autofillHints="@string/note"
+        android:background="@drawable/custom_edit_text"
         android:ems="10"
         android:gravity="start|top"
         android:hint="@string/note"
         android:inputType="textMultiLine"
+        android:padding="17dp"
         app:layout_constraintBottom_toTopOf="@+id/buttonSaveNote"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTittle"
-        android:autofillHints="@string/note" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextTittle" />
 
     <Button
         android:id="@+id/buttonSaveNote"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/custom_button"
         android:text="@string/save_note"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
