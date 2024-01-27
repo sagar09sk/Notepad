@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,7 +29,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
-    TextView textViewMain ,textButtonLogout;
+    TextView textViewMain;
+    ImageView ButtonLogout;
     Button buttonLog ,buttonSign ;
     ImageButton buttonAddNote;
     RecyclerView recyclerView;
@@ -72,8 +74,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             userID = firebaseAuth.getCurrentUser().getUid();
-            textViewMain = findViewById(R.id.textViewMain);
+            textViewMain = findViewById(R.id.textViewAdd);
             textViewMain.setVisibility(View.VISIBLE);
+            ButtonLogout = findViewById(R.id.ButtonLogout);
 
             // view notes
 
@@ -81,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
             titleList = new ArrayList<>();
 
             recyclerView = findViewById(R.id.recyclerView);
-            recyclerView.setVisibility(View.VISIBLE);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             CustomAdapterForAllNote customAdapterForAllNote = new CustomAdapterForAllNote(this,titleList,noteList);
 
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if(task.isComplete()){
+                        recyclerView.setVisibility(View.VISIBLE);
                         for(QueryDocumentSnapshot document: task.getResult()){
                             noteList.add(document.getString("Note"));
                             titleList.add(document.getString("Title"));
@@ -111,12 +114,19 @@ public class MainActivity extends AppCompatActivity {
 
 
             //logout function
-            textButtonLogout = findViewById(R.id.textButtonLogout);
-            textButtonLogout.setVisibility(View.VISIBLE);
-            textButtonLogout.setOnClickListener(view -> {
-                firebaseAuth.signOut();
-                startActivity(new Intent(getApplicationContext(),LoginActivity.class));
-                finish();
+            ButtonLogout.setVisibility(View.VISIBLE);
+            ButtonLogout.setOnClickListener(view -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(" Logout for App ");
+                builder.setMessage(" Are you sure you want to logout of the Notepad app? ");
+                builder.setNeutralButton(" Cancel " ,(dialogInterface, i) -> {
+                });
+                builder.setPositiveButton(" YES Sure " ,(dialogInterface, i) -> {
+                    firebaseAuth.signOut();
+                    startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+                    finish();
+                });
+                builder.create().show();
             });
 
             // add note function

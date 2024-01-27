@@ -37,15 +37,28 @@ public class CustomAdapterForAllNote extends RecyclerView.Adapter<CustomAdapterF
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        String title = (String) titleList.get(position);
-        holder.textViewTitle.setText(String.valueOf(titleList.get(position)));
-        String note = (String) noteList.get(position);
-        holder.textViewNote.setText(String.valueOf(noteList.get(position)));
+        String title = titleList.get(position);
+        String note = noteList.get(position);
+        String decryptTitle;
+        String decryptNote;
+        try {
+            decryptTitle = CryptoUtils.decrypt(title);
+            decryptNote = CryptoUtils.decrypt(note);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        holder.textViewTitle.setText(decryptTitle);
+        holder.textViewNote.setText(decryptNote);
+
 
         holder.cardView.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle(title);
-            builder.setMessage(note);
+            try {
+                builder.setTitle(decryptTitle);
+                builder.setMessage(decryptNote);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             builder.setPositiveButton(" Edit ", (dialogInterface, i) -> {
                 Intent intent = new Intent(context,AddNoteActivity.class);
                 intent.putExtra("title" ,title);
