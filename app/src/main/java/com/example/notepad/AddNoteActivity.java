@@ -1,10 +1,11 @@
 package com.example.notepad;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.widget.Button;
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,11 +17,12 @@ import java.util.HashMap;
 import java.util.Map;
 import android.os.Bundle;
 
+
 public class AddNoteActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
     EditText editTextTitle,editTextMultiLine;
-    ImageView buttonSaveNote;
+    ImageView buttonSaveNote,buttonDeleteNote,buttonShareNote;
     String userID;
     TextView textViewAdd;
 
@@ -33,102 +35,80 @@ public class AddNoteActivity extends AppCompatActivity {
 
         editTextTitle = findViewById(R.id.editTextTittle);
         editTextMultiLine = findViewById(R.id.editTextMultiLine);
+        buttonDeleteNote = findViewById(R.id.buttonDeleteNote);
+        buttonSaveNote = findViewById(R.id.buttonSaveNote);
+        buttonShareNote = findViewById(R.id.buttonShareNote);
         textViewAdd = findViewById(R.id.textViewAdd);
-
+        firebaseAuth = FirebaseAuth.getInstance();
 
         String intentTitle = getIntent().getStringExtra("title");
-        //in case of new note
+        String intentNote = getIntent().getStringExtra("note");
         if(intentTitle == null){
             textViewAdd.setText("Add New Note");
-
-            buttonSaveNote = findViewById(R.id.buttonSaveNote);
-            buttonSaveNote.setOnClickListener(view -> {
-
-                String title = editTextTitle.getText().toString();
-                String noteBody = editTextMultiLine.getText().toString();
-
-                try {
-                    title = CryptoUtils.encrypt(title);
-                    noteBody = CryptoUtils.encrypt(noteBody);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
-                firebaseAuth = FirebaseAuth.getInstance();
-                userID = firebaseAuth.getCurrentUser().getUid();
-                firebaseFirestore = FirebaseFirestore.getInstance();
-                DocumentReference documentReference = firebaseFirestore.collection(userID).document(title);
-                Map<String,Object> note = new HashMap<>();
-                note.put("Title",title);
-                note.put("Note",noteBody);
-
-                documentReference.set(note).addOnFailureListener(e -> {
-                    Toast.makeText(AddNoteActivity.this, "Failed to Save"+ e, Toast.LENGTH_SHORT).show();
-                });
-
-                startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                finish();
-
-            });
-
+            buttonSaveNote.setVisibility(View.VISIBLE);
         }
-        //in case of edit note
         else{
             textViewAdd.setText("Edit Note");
-            String intentNote = getIntent().getStringExtra("note");
+            editTextTitle.setText(intentTitle);
+            editTextMultiLine.setText(intentNote);
+            buttonDeleteNote.setVisibility(View.VISIBLE);
+            buttonShareNote.setVisibility(View.VISIBLE);
+            editTextTitle.setFocusable(false);
+        }
 
-            String decryptTitle;
-            String decryptNote;
+        userID = firebaseAuth.getCurrentUser().getUid();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        buttonSaveNote.setOnClickListener(view -> {
+            String title = editTextTitle.getText().toString().trim();
+            String noteBody = editTextMultiLine.getText().toString();
+            if(TextUtils.isEmpty(title)){
+                editTextTitle.setError("Title is Required");
+                return;
+            }
+
             try {
-                decryptTitle = CryptoUtils.decrypt(intentTitle);
-                decryptNote = CryptoUtils.decrypt(intentNote);
+                noteBody = CryptoUtils.encrypt(noteBody);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-
-            editTextTitle.setText(decryptTitle);
-            editTextMultiLine.setText(decryptNote);
-
-
-            buttonSaveNote = findViewById(R.id.buttonSaveNote);
-            buttonSaveNote.setOnClickListener(view -> {
-
-                String title = editTextTitle.getText().toString();
-                String noteBody = editTextMultiLine.getText().toString();
-
-                try {
-                    title = CryptoUtils.encrypt(title);
-                    noteBody = CryptoUtils.encrypt(noteBody);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
-                firebaseAuth = FirebaseAuth.getInstance();
-                userID = firebaseAuth.getCurrentUser().getUid();
-                firebaseFirestore = FirebaseFirestore.getInstance();
-                DocumentReference documentReference = firebaseFirestore.collection(userID).document(title);
-                Map<String,Object> note = new HashMap<>();
-                note.put("Title",title);
-                note.put("Note",noteBody);
-
-                documentReference.set(note).addOnSuccessListener(unused->{
-                            FirebaseFirestore.getInstance().collection(userID).document(intentTitle).delete().addOnSuccessListener(unused2 -> {
-                            }).addOnFailureListener(e ->
-                                    Toast.makeText(this, " failed " +e , Toast.LENGTH_SHORT).show()
-                            );
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(AddNoteActivity.this, "Failed to Save"+ e, Toast.LENGTH_SHORT).show();
-                        });
-
-
-
+            DocumentReference documentReference = firebaseFirestore.collection(userID).document(title);
+            Map<String,Object> note = new HashMap<>();
+            note.put("Title",title);
+            note.put("Note",noteBody);
+            documentReference.set(note).addOnSuccessListener(unused ->{
+                Toast.makeText(this, " saved ", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getApplicationContext(),MainActivity.class));
                 finish();
-
             });
 
-        }
+        });
+
+        buttonDeleteNote.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Are you sure you want to delete this note ");
+            builder.setTitle(" Delete Note ");
+            builder.setNeutralButton(" Cancel ", (dialogInterface, i) -> {
+            });
+            builder.setPositiveButton(" Delete ", (dialogInterface, i) -> {
+                FirebaseFirestore.getInstance().collection(userID).document(intentTitle).delete().addOnSuccessListener(unused -> {
+                    startActivity(new Intent(this ,MainActivity.class));
+                    finish();
+                });
+            });
+            builder.create().show();
+        });
+
+        buttonShareNote.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_SUBJECT ,"Note");
+            intent.putExtra(Intent.EXTRA_TEXT ,intentNote);
+            startActivity(Intent.createChooser(intent,"Share"));
+
+        });
 
     }
+
+
 }

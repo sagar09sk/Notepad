@@ -24,7 +24,6 @@
             android:fontFamily="@font/aclonica"
             android:text="@string/notepad"
             android:textSize="34sp"
-            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -34,36 +33,13 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="7dp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/logout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <Button
-        android:id="@+id/buttonSign"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="40dp"
-        android:text="@string/sign_up"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLog" />
-
-    <Button
-        android:id="@+id/buttonLog"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="40dp"
-        android:text="@string/log_in"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.337"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -80,7 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="7dp"
-        android:visibility="invisible"
+        android:contentDescription="@string/notepad"
         app:backgroundTint="#5C6BC0"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"

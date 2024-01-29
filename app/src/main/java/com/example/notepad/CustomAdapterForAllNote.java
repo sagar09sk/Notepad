@@ -38,47 +38,22 @@ public class CustomAdapterForAllNote extends RecyclerView.Adapter<CustomAdapterF
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         String title = titleList.get(position);
-        String note = noteList.get(position);
-        String decryptTitle;
+        String encryptNote = noteList.get(position);
         String decryptNote;
         try {
-            decryptTitle = CryptoUtils.decrypt(title);
-            decryptNote = CryptoUtils.decrypt(note);
+            decryptNote = CryptoUtils.decrypt(encryptNote);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        holder.textViewTitle.setText(decryptTitle);
+        holder.textViewTitle.setText(title);
         holder.textViewNote.setText(decryptNote);
 
 
         holder.cardView.setOnClickListener(view -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            try {
-                builder.setTitle(decryptTitle);
-                builder.setMessage(decryptNote);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            builder.setPositiveButton(" Edit ", (dialogInterface, i) -> {
-                Intent intent = new Intent(context,AddNoteActivity.class);
-                intent.putExtra("title" ,title);
-                intent.putExtra("note",note);
-                context.startActivity(intent);
-            });
-            builder.setNegativeButton(" Delete ", (dialogInterface, i) -> {
-                String userID  = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                FirebaseFirestore.getInstance().collection(userID).document(title).delete().addOnSuccessListener(unused -> {
-                    context.startActivity(new Intent(context,MainActivity.class));
-                    Toast.makeText(context, "deletion is successful", Toast.LENGTH_SHORT).show();
-                }).addOnFailureListener(e ->
-                        Toast.makeText(context, " failed " +e , Toast.LENGTH_SHORT).show()
-                );
-
-            });
-            builder.setNeutralButton(" OK ", (dialogInterface, i) -> {
-
-            });
-            builder.create().show();
+            Intent intent = new Intent(context,AddNoteActivity.class);
+            intent.putExtra("title" ,title);
+            intent.putExtra("note",decryptNote);
+            context.startActivity(intent);
         });
 
 

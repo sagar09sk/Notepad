@@ -29,9 +29,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
-    TextView textViewMain;
     ImageView ButtonLogout;
-    Button buttonLog ,buttonSign ;
     ImageButton buttonAddNote;
     RecyclerView recyclerView;
     String userID;
@@ -42,12 +40,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         firebaseAuth = FirebaseAuth.getInstance();
+        noteList = new ArrayList<>();
+        titleList = new ArrayList<>();
 
+        // If user is not logged in
+        if(firebaseAuth.getCurrentUser() == null){
+            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            startActivity(intent);
+        }
 
         // If user is logged in
         if(firebaseAuth.getCurrentUser() != null){
+
+            ButtonLogout = findViewById(R.id.ButtonLogout);
+            ButtonLogout.setVisibility(View.VISIBLE);
+            ButtonLogout.setOnClickListener(view -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(" Logout for App ");
+                builder.setMessage(" Are you sure you want to logout of the Notepad app? ");
+                builder.setNeutralButton(" Cancel " ,(dialogInterface, i) -> {
+                });
+                builder.setPositiveButton(" YES Sure " ,(dialogInterface, i) -> {
+                    firebaseAuth.signOut();
+                    startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+                    finish();
+                });
+                builder.create().show();
+            });
 
             // if user is not verified
             FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -73,86 +93,41 @@ public class MainActivity extends AppCompatActivity {
                 builder.create().show();
             }
 
-            userID = firebaseAuth.getCurrentUser().getUid();
-            textViewMain = findViewById(R.id.textViewAdd);
-            textViewMain.setVisibility(View.VISIBLE);
-            ButtonLogout = findViewById(R.id.ButtonLogout);
-
             // view notes
-
-            noteList = new ArrayList<>();
-            titleList = new ArrayList<>();
-
             recyclerView = findViewById(R.id.recyclerView);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             CustomAdapterForAllNote customAdapterForAllNote = new CustomAdapterForAllNote(this,titleList,noteList);
 
             // get notes for firebaseStore
             firebaseFirestore = FirebaseFirestore.getInstance();
-            firebaseFirestore.collection(userID).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @SuppressLint("NotifyDataSetChanged")
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if(task.isComplete()){
-                        recyclerView.setVisibility(View.VISIBLE);
-                        for(QueryDocumentSnapshot document: task.getResult()){
-                            noteList.add(document.getString("Note"));
-                            titleList.add(document.getString("Title"));
-                            customAdapterForAllNote.notifyDataSetChanged();
+            userID = firebaseAuth.getCurrentUser().getUid();
+            firebaseFirestore.collection(userID).get().addOnCompleteListener(task -> {
+                if(task.isComplete()){
+                    recyclerView.setVisibility(View.VISIBLE);
+                    for(QueryDocumentSnapshot document: task.getResult()){
+                        noteList.add(document.getString("Note"));
+                        titleList.add(document.getString("Title"));
+                        customAdapterForAllNote.notifyDataSetChanged();
 
-                        }
-                    }else{
-                        Log.d(TAG, "failed to get Notes "+task.getException());
-                        Toast.makeText(MainActivity.this, "failed to get Notes "+task.getException(), Toast.LENGTH_SHORT).show();
-                        finish();
                     }
+                }else{
+                    Log.d(TAG, "failed to get Notes "+task.getException());
+                    Toast.makeText(MainActivity.this, "failed to get Notes "+task.getException(), Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             });
 
 
             recyclerView.setAdapter(customAdapterForAllNote);
 
-
-            //logout function
-            ButtonLogout.setVisibility(View.VISIBLE);
-            ButtonLogout.setOnClickListener(view -> {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(" Logout for App ");
-                builder.setMessage(" Are you sure you want to logout of the Notepad app? ");
-                builder.setNeutralButton(" Cancel " ,(dialogInterface, i) -> {
-                });
-                builder.setPositiveButton(" YES Sure " ,(dialogInterface, i) -> {
-                    firebaseAuth.signOut();
-                    startActivity(new Intent(getApplicationContext(),LoginActivity.class));
-                    finish();
-                });
-                builder.create().show();
-            });
-
             // add note function
             buttonAddNote = findViewById(R.id.buttonAddNote);
             buttonAddNote.setVisibility(View.VISIBLE);
-            buttonAddNote.setOnClickListener(view ->
-                    startActivity(new Intent(getApplicationContext(),AddNoteActivity.class))
-            );
-
-        }
-
-        // If user is not logged in
-        else{
-            buttonLog = findViewById(R.id.buttonLog);
-            buttonSign = findViewById(R.id.buttonSign);
-            buttonLog.setVisibility(View.VISIBLE);
-            buttonSign.setVisibility(View.VISIBLE);
-
-            buttonSign.setOnClickListener(view -> {
-                Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
-                startActivity(intent);
+            buttonAddNote.setOnClickListener(view -> {
+                startActivity(new Intent(getApplicationContext(), AddNoteActivity.class));
+                finish();
             });
-            buttonLog.setOnClickListener(view -> {
-                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-                startActivity(intent);
-            });
+
         }
 
 
