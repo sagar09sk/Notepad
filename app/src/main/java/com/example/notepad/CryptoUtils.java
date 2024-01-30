@@ -29,14 +29,18 @@ public class CryptoUtils {
         System.arraycopy(iv, 0, combined, 0, iv.length);
         System.arraycopy(encryptedBytes, 0, combined, iv.length, encryptedBytes.length);
 
-        return Base64.encodeToString(combined, Base64.DEFAULT);
+        String base64Encoded = Base64.encodeToString(combined, Base64.DEFAULT);
+
+        return base64Encoded.replace('/', '_');
     }
 
     public static String decrypt(String encryptedData) throws Exception {
+
+        String base64Encoded = encryptedData.replace('_', '/');
         Cipher cipher = Cipher.getInstance(TRANSFORMATION);
 
         // Decode Base64
-        byte[] combined = Base64.decode(encryptedData, Base64.DEFAULT);
+        byte[] combined = Base64.decode(base64Encoded, Base64.DEFAULT);
 
         // Extract IV
         byte[] iv = new byte[16];

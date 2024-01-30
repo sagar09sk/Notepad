@@ -27,7 +27,8 @@ public class AddNoteActivity extends AppCompatActivity {
     LinearLayout layoutEdit;
     String userID;
     TextView textViewAdd;
-    String encryptNote;
+    String encryptNoteIntent;
+    String encryptTitleIntent;
     String title;
     String noteBody;
 
@@ -56,19 +57,19 @@ public class AddNoteActivity extends AppCompatActivity {
         });
 
 
-        title = getIntent().getStringExtra("title");
-        encryptNote = getIntent().getStringExtra("encryptNote");
-        if(title == null){
+        encryptTitleIntent = getIntent().getStringExtra("encryptTitle");
+        encryptNoteIntent = getIntent().getStringExtra("encryptNote");
+        if(encryptTitleIntent == null){
             textViewAdd.setText("Add New Note");
         }
         else{
-            layoutEdit.setVisibility(View.VISIBLE);
             try {
-                editTextTitle.setText(title);
-                editTextMultiLine.setText(CryptoUtils.decrypt(encryptNote));
+                editTextTitle.setText(CryptoUtils.decrypt(encryptTitleIntent));
+                editTextMultiLine.setText(CryptoUtils.decrypt(encryptNoteIntent));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+            layoutEdit.setVisibility(View.VISIBLE);
             textViewAdd.setText("Edit Note");
             editTextTitle.setFocusable(false);
         }
@@ -82,6 +83,11 @@ public class AddNoteActivity extends AppCompatActivity {
             }
 
             try {
+                if(encryptTitleIntent == null){
+                    title = CryptoUtils.encrypt(title);
+                }else{
+                    title = encryptTitleIntent;
+                }
                 noteBody = CryptoUtils.encrypt(noteBody);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -108,7 +114,7 @@ public class AddNoteActivity extends AppCompatActivity {
             builder.setNeutralButton(" Cancel ", (dialogInterface, i) -> {
             });
             builder.setPositiveButton(" Delete ", (dialogInterface, i) -> {
-                FirebaseFirestore.getInstance().collection(userID).document(title).delete().addOnSuccessListener(unused -> {
+                FirebaseFirestore.getInstance().collection(userID).document(encryptTitleIntent).delete().addOnSuccessListener(unused -> {
                     startActivity(new Intent(this ,MainActivity.class));
                     finish();
                 });
