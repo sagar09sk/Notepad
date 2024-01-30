@@ -17,28 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/buttonDeleteNote"
-            android:layout_width="40dp"
-            android:layout_height="50dp"
-            android:layout_marginRight="7dp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/buttonShareNote"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/delete_document" />
-
-        <ImageView
-            android:id="@+id/buttonShareNote"
-            android:layout_width="40dp"
-            android:layout_height="50dp"
-            android:layout_marginRight="7dp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/buttonSaveNote"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/share" />
-
         <TextView
             android:id="@+id/textViewAdd"
             android:layout_width="wrap_content"
@@ -61,19 +39,45 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/check_mark" />
 
+        <LinearLayout
+            android:id="@+id/layoutEdit"
+            android:layout_width="99dp"
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/buttonSaveNote"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/buttonDeleteNote"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="7dp"
+                app:srcCompat="@drawable/delete_document" />
+
+            <ImageView
+                android:id="@+id/buttonShareNote"
+                android:layout_width="40dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="7dp"
+                app:srcCompat="@drawable/share" />
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <EditText
         android:id="@+id/editTextTittle"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/custom_note_view"
         android:fontFamily="@font/aclonica"
         android:hint="@string/title"
+        android:inputType="text"
         android:maxLength="24"
-        android:textSize="34sp"
+        android:textSize="27sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

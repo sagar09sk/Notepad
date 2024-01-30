@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,8 +24,13 @@ public class AddNoteActivity extends AppCompatActivity {
     FirebaseFirestore firebaseFirestore;
     EditText editTextTitle,editTextMultiLine;
     ImageView buttonSaveNote,buttonDeleteNote,buttonShareNote;
+    LinearLayout layoutEdit;
     String userID;
     TextView textViewAdd;
+    String encryptNote;
+    String title;
+    String noteBody;
+
 
 
     @SuppressLint("SetTextI18n")
@@ -39,29 +45,37 @@ public class AddNoteActivity extends AppCompatActivity {
         buttonSaveNote = findViewById(R.id.buttonSaveNote);
         buttonShareNote = findViewById(R.id.buttonShareNote);
         textViewAdd = findViewById(R.id.textViewAdd);
+        layoutEdit = findViewById(R.id.layoutEdit);
         firebaseAuth = FirebaseAuth.getInstance();
-
-        String intentTitle = getIntent().getStringExtra("title");
-        String intentNote = getIntent().getStringExtra("note");
-        if(intentTitle == null){
-            textViewAdd.setText("Add New Note");
-            buttonSaveNote.setVisibility(View.VISIBLE);
-        }
-        else{
-            textViewAdd.setText("Edit Note");
-            editTextTitle.setText(intentTitle);
-            editTextMultiLine.setText(intentNote);
-            buttonDeleteNote.setVisibility(View.VISIBLE);
-            buttonShareNote.setVisibility(View.VISIBLE);
-            editTextTitle.setFocusable(false);
-        }
-
         userID = firebaseAuth.getCurrentUser().getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
+
+        editTextMultiLine.setOnClickListener(v -> {
+            layoutEdit.setVisibility(View.INVISIBLE);
+        });
+
+
+        title = getIntent().getStringExtra("title");
+        encryptNote = getIntent().getStringExtra("encryptNote");
+        if(title == null){
+            textViewAdd.setText("Add New Note");
+        }
+        else{
+            layoutEdit.setVisibility(View.VISIBLE);
+            try {
+                editTextTitle.setText(title);
+                editTextMultiLine.setText(CryptoUtils.decrypt(encryptNote));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            textViewAdd.setText("Edit Note");
+            editTextTitle.setFocusable(false);
+        }
+
         buttonSaveNote.setOnClickListener(view -> {
-            String title = editTextTitle.getText().toString().trim();
-            String noteBody = editTextMultiLine.getText().toString();
+            title = editTextTitle.getText().toString().trim();
+            noteBody = editTextMultiLine.getText().toString();
             if(TextUtils.isEmpty(title)){
                 editTextTitle.setError("Title is Required");
                 return;
@@ -78,7 +92,10 @@ public class AddNoteActivity extends AppCompatActivity {
             note.put("Note",noteBody);
             documentReference.set(note).addOnSuccessListener(unused ->{
                 Toast.makeText(this, " saved ", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
                 finish();
             });
 
@@ -91,7 +108,7 @@ public class AddNoteActivity extends AppCompatActivity {
             builder.setNeutralButton(" Cancel ", (dialogInterface, i) -> {
             });
             builder.setPositiveButton(" Delete ", (dialogInterface, i) -> {
-                FirebaseFirestore.getInstance().collection(userID).document(intentTitle).delete().addOnSuccessListener(unused -> {
+                FirebaseFirestore.getInstance().collection(userID).document(title).delete().addOnSuccessListener(unused -> {
                     startActivity(new Intent(this ,MainActivity.class));
                     finish();
                 });
@@ -103,7 +120,7 @@ public class AddNoteActivity extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_SUBJECT ,"Note");
-            intent.putExtra(Intent.EXTRA_TEXT ,intentNote);
+            intent.putExtra(Intent.EXTRA_TEXT ,noteBody);
             startActivity(Intent.createChooser(intent,"Share"));
 
         });

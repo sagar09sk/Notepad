@@ -39,20 +39,18 @@ public class CustomAdapterForAllNote extends RecyclerView.Adapter<CustomAdapterF
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         String title = titleList.get(position);
         String encryptNote = noteList.get(position);
-        String decryptNote;
         try {
-            decryptNote = CryptoUtils.decrypt(encryptNote);
+            holder.textViewTitle.setText(title);
+            holder.textViewNote.setText(CryptoUtils.decrypt(encryptNote));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        holder.textViewTitle.setText(title);
-        holder.textViewNote.setText(decryptNote);
 
 
         holder.cardView.setOnClickListener(view -> {
             Intent intent = new Intent(context,AddNoteActivity.class);
             intent.putExtra("title" ,title);
-            intent.putExtra("note",decryptNote);
+            intent.putExtra("encryptNote",encryptNote);
             context.startActivity(intent);
         });
 
