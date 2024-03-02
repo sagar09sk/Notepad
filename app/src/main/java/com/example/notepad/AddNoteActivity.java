@@ -1,10 +1,15 @@
 package com.example.notepad;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,15 +28,12 @@ public class AddNoteActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
     EditText editTextTitle,editTextMultiLine;
-    ImageView buttonSaveNote,buttonDeleteNote,buttonShareNote;
-    LinearLayout layoutEdit;
     String userID;
-    TextView textViewAdd;
     String encryptNoteIntent;
     String encryptTitleIntent;
     String title;
     String noteBody;
-
+    Boolean editNote;
 
 
     @SuppressLint("SetTextI18n")
@@ -40,27 +42,22 @@ public class AddNoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("all bills");
+        setSupportActionBar(toolbar);
+
         editTextTitle = findViewById(R.id.editTextTittle);
         editTextMultiLine = findViewById(R.id.editTextMultiLine);
-        buttonDeleteNote = findViewById(R.id.buttonDeleteNote);
-        buttonSaveNote = findViewById(R.id.buttonSaveNote);
-        buttonShareNote = findViewById(R.id.buttonShareNote);
-        textViewAdd = findViewById(R.id.textViewAdd);
-        layoutEdit = findViewById(R.id.layoutEdit);
         firebaseAuth = FirebaseAuth.getInstance();
         userID = firebaseAuth.getCurrentUser().getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-
-        editTextMultiLine.setOnClickListener(v -> {
-            layoutEdit.setVisibility(View.INVISIBLE);
-        });
-
-
         encryptTitleIntent = getIntent().getStringExtra("encryptTitle");
         encryptNoteIntent = getIntent().getStringExtra("encryptNote");
         if(encryptTitleIntent == null){
-            textViewAdd.setText("Add New Note");
+            toolbar.setTitle("Add New Note");
+            editNote = false;
+
         }
         else{
             try {
@@ -69,45 +66,58 @@ public class AddNoteActivity extends AppCompatActivity {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            layoutEdit.setVisibility(View.VISIBLE);
-            textViewAdd.setText("Edit Note");
+            toolbar.setTitle("Edit Note");
             editTextTitle.setFocusable(false);
+            editNote = true;
         }
 
-        buttonSaveNote.setOnClickListener(view -> {
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_for_add_notepad,menu);
+        if(editNote){
+            menu.findItem(R.id.delete_note).setVisible(true);
+            menu.findItem(R.id.share_note).setVisible(true);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.save_note){
             title = editTextTitle.getText().toString().trim();
             noteBody = editTextMultiLine.getText().toString();
             if(TextUtils.isEmpty(title)){
                 editTextTitle.setError("Title is Required");
-                return;
-            }
-
-            try {
-                if(encryptTitleIntent == null){
-                    title = CryptoUtils.encrypt(title);
-                }else{
-                    title = encryptTitleIntent;
+            }else {
+                try {
+                    if(encryptTitleIntent == null){
+                        title = CryptoUtils.encrypt(title);
+                    }else{
+                        title = encryptTitleIntent;
+                    }
+                    noteBody = CryptoUtils.encrypt(noteBody);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
-                noteBody = CryptoUtils.encrypt(noteBody);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+                DocumentReference documentReference = firebaseFirestore.collection(userID).document(title);
+                Map<String,Object> note = new HashMap<>();
+                note.put("Title",title);
+                note.put("Note",noteBody);
+                documentReference.set(note).addOnSuccessListener(unused ->{
+                    Toast.makeText(this, " saved ", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+
+                    finish();
+                });
             }
-            DocumentReference documentReference = firebaseFirestore.collection(userID).document(title);
-            Map<String,Object> note = new HashMap<>();
-            note.put("Title",title);
-            note.put("Note",noteBody);
-            documentReference.set(note).addOnSuccessListener(unused ->{
-                Toast.makeText(this, " saved ", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
 
-                finish();
-            });
+        }
 
-        });
-
-        buttonDeleteNote.setOnClickListener(v -> {
+        if(id == R.id.delete_note){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Are you sure you want to delete this note ");
             builder.setTitle(" Delete Note ");
@@ -120,18 +130,24 @@ public class AddNoteActivity extends AppCompatActivity {
                 });
             });
             builder.create().show();
-        });
+        }
 
-        buttonShareNote.setOnClickListener(v -> {
+        if(id == R.id.share_note){
+            String decrypt;
+            try {
+                decrypt = CryptoUtils.decrypt(encryptNoteIntent);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_SUBJECT ,"Note");
-            intent.putExtra(Intent.EXTRA_TEXT ,noteBody);
+            intent.putExtra(Intent.EXTRA_TEXT ,decrypt);
             startActivity(Intent.createChooser(intent,"Share"));
 
-        });
+        }
 
+        return super.onOptionsItemSelected(item);
     }
-
-
 }

@@ -6,10 +6,13 @@ import android.os.Bundle;
 import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -29,17 +32,19 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
-    ImageView ButtonLogout;
     ImageButton buttonAddNote;
     RecyclerView recyclerView;
     String userID;
     ArrayList<String> noteList;
     ArrayList<String> titleList;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = findViewById(R.id.toolbar_main);
+        setSupportActionBar(toolbar);
+
         firebaseAuth = FirebaseAuth.getInstance();
         noteList = new ArrayList<>();
         titleList = new ArrayList<>();
@@ -48,27 +53,11 @@ public class MainActivity extends AppCompatActivity {
         if(firebaseAuth.getCurrentUser() == null){
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
             startActivity(intent);
+
         }
 
         // If user is logged in
         if(firebaseAuth.getCurrentUser() != null){
-
-            ButtonLogout = findViewById(R.id.ButtonLogout);
-            ButtonLogout.setVisibility(View.VISIBLE);
-            ButtonLogout.setOnClickListener(view -> {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(" Logout for App ");
-                builder.setMessage(" Are you sure you want to logout of the Notepad app? ");
-                builder.setNeutralButton(" Cancel " ,(dialogInterface, i) -> {
-                });
-                builder.setPositiveButton(" YES Sure " ,(dialogInterface, i) -> {
-                    firebaseAuth.signOut();
-                    startActivity(new Intent(getApplicationContext(),LoginActivity.class));
-                    finish();
-                });
-                builder.create().show();
-            });
-
             // if user is not verified
             FirebaseUser user = firebaseAuth.getCurrentUser();
             if(!user.isEmailVerified()){
@@ -131,6 +120,28 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_for_main,menu);
+        return true;
+    }
 
-
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id  = item.getItemId();
+        if(id == R.id.logout_app){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(" Logout for App ");
+            builder.setMessage(" Are you sure you want to logout of the Notepad app? ");
+            builder.setNeutralButton(" Cancel " ,(dialogInterface, i) -> {
+            });
+            builder.setPositiveButton(" YES Sure " ,(dialogInterface, i) -> {
+                firebaseAuth.signOut();
+                startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+                finish();
+            });
+            builder.create().show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

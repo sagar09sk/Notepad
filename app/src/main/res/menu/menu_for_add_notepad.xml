@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/share_note"
+        android:icon="@drawable/share"
+        android:title="Item"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/delete_note"
+        android:icon="@drawable/delete_document"
+        android:title="Item"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/save_note"
+        android:icon="@drawable/check_mark"
+        android:title="Item"
+        app:showAsAction="ifRoom" />
+</menu>
