@@ -13,6 +13,12 @@
         android:theme="@style/Theme.Notepad"
         tools:targetApi="31">
         <activity
+            android:name=".GenerateBillActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BillAsPerProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddNoteActivity"
             android:exported="false" />
         <activity

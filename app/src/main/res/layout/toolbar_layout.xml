@@ -11,9 +11,8 @@
         android:id="@+id/textViewAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
         android:fontFamily="@font/aclonica"
         android:text="@string/notepad"
         android:textColor="@color/white"
-        android:textSize="34sp" />
+        android:textSize="27dp" />
 </androidx.appcompat.widget.Toolbar>

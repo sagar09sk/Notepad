@@ -18,4 +18,15 @@
     <string name="title">Title</string>
     <string name="note">Note</string>
     <string name="save_note">Save Note</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="reading">reading</string>
+    <string name="name">name</string>
+    <string name="blank">name</string>
+    <string name="date">date</string>
+    <string name="previous">previous</string>
+    <string name="rate">rate</string>
+    <string name="current">current</string>
+    <string name="unit">unit</string>
+    <string name="amount">amount</string>
 </resources>

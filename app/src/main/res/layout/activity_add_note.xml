@@ -7,7 +7,7 @@
     tools:context=".AddNoteActivity">
 
     <include
-        layout="@layout/toolbar_add_note"
+        layout="@layout/toolbar_layout"
         android:id="@+id/toolbar"/>
 
     <EditText
@@ -37,6 +37,7 @@
         android:gravity="start|top"
         android:hint="Note something down"
         android:inputType="textMultiLine"
+        android:isScrollContainer="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

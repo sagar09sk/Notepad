@@ -7,6 +7,9 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
@@ -15,12 +18,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.notepad.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -31,35 +38,27 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
-    FirebaseFirestore firebaseFirestore;
-    ImageButton buttonAddNote;
-    RecyclerView recyclerView;
-    String userID;
-    ArrayList<String> noteList;
-    ArrayList<String> titleList;
+    BottomNavigationView bottomNavigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = findViewById(R.id.toolbar_main);
+        TextView textViewAdd = findViewById(R.id.textViewAdd);
         setSupportActionBar(toolbar);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        noteList = new ArrayList<>();
-        titleList = new ArrayList<>();
-
+        FirebaseUser user = firebaseAuth.getCurrentUser();
         // If user is not logged in
-        if(firebaseAuth.getCurrentUser() == null){
+        if(user == null){
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
             startActivity(intent);
-
+            finish();
         }
-
-        // If user is logged in
-        if(firebaseAuth.getCurrentUser() != null){
+        else {
             // if user is not verified
-            FirebaseUser user = firebaseAuth.getCurrentUser();
             if(!user.isEmailVerified()){
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Your email is not verified");
@@ -72,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
                             finish();
                         })
                 );
-
                 builder.setNegativeButton(" OK ", (dialogInterface, i) -> {
                     //close alert dialog
                     firebaseAuth.signOut();
@@ -81,45 +79,41 @@ public class MainActivity extends AppCompatActivity {
 
                 builder.create().show();
             }
-
-            // view notes
-            recyclerView = findViewById(R.id.recyclerView);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            CustomAdapterForAllNote customAdapterForAllNote = new CustomAdapterForAllNote(this,titleList,noteList);
-
-            // get notes for firebaseStore
-            firebaseFirestore = FirebaseFirestore.getInstance();
-            userID = firebaseAuth.getCurrentUser().getUid();
-            firebaseFirestore.collection(userID).get().addOnCompleteListener(task -> {
-                if(task.isComplete()){
-                    recyclerView.setVisibility(View.VISIBLE);
-                    for(QueryDocumentSnapshot document: task.getResult()){
-                        noteList.add(document.getString("Note"));
-                        titleList.add(document.getString("Title"));
-                        customAdapterForAllNote.notifyDataSetChanged();
-
-                    }
-                }else{
-                    Log.d(TAG, "failed to get Notes "+task.getException());
-                    Toast.makeText(MainActivity.this, "failed to get Notes "+task.getException(), Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            });
-
-
-            recyclerView.setAdapter(customAdapterForAllNote);
-
-            // add note function
-            buttonAddNote = findViewById(R.id.buttonAddNote);
-            buttonAddNote.setVisibility(View.VISIBLE);
-            buttonAddNote.setOnClickListener(view -> {
-                startActivity(new Intent(getApplicationContext(), AddNoteActivity.class));
-                finish();
-            });
-
         }
 
+        replaceFragment(new NotesFragment());
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnItemSelectedListener(menuItem -> {
+           int id = menuItem.getItemId();
+           if (id == R.id.notes){
+                replaceFragment(new NotesFragment());
+               textViewAdd.setText("Notes");
+            }else if(id == R.id.bills){
+               replaceFragment(new BillsFragment());
+               textViewAdd.setText("Electricity Bills");
+           }else if(id == R.id.dateRange){
+               replaceFragment(new DateRangeFragment());
+               textViewAdd.setText("Dates");
+           }else if(id == R.id.event){
+               replaceFragment( new EventFragment());
+               textViewAdd.setText("Events");
+           }
+           return true;
+        });
+
+
+
     }
+
+
+    private void replaceFragment(Fragment fragment){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout,fragment);
+        fragmentTransaction.commit();
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_for_main,menu);

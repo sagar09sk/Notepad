@@ -43,7 +43,7 @@ public class AddNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_note);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("all bills");
+        TextView textViewAdd = findViewById(R.id.textViewAdd);
         setSupportActionBar(toolbar);
 
         editTextTitle = findViewById(R.id.editTextTittle);
@@ -55,7 +55,7 @@ public class AddNoteActivity extends AppCompatActivity {
         encryptTitleIntent = getIntent().getStringExtra("encryptTitle");
         encryptNoteIntent = getIntent().getStringExtra("encryptNote");
         if(encryptTitleIntent == null){
-            toolbar.setTitle("Add New Note");
+            textViewAdd.setText("Add New Note");
             editNote = false;
 
         }
@@ -66,7 +66,7 @@ public class AddNoteActivity extends AppCompatActivity {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            toolbar.setTitle("Edit Note");
+            textViewAdd.setText("Edit Note");
             editTextTitle.setFocusable(false);
             editNote = true;
         }
