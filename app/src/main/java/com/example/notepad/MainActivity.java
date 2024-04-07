@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                textViewAdd.setText("Electricity Bills");
            }else if(id == R.id.dateRange){
                replaceFragment(new DateRangeFragment());
-               textViewAdd.setText("Dates");
+               textViewAdd.setText("Important Days");
            }else if(id == R.id.event){
                replaceFragment( new EventFragment());
                textViewAdd.setText("Events");

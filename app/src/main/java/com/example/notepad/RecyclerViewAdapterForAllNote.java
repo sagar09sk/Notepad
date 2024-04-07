@@ -6,21 +6,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 
-public class CustomAdapterForAllNote extends RecyclerView.Adapter<CustomAdapterForAllNote.MyViewHolder>{
+public class RecyclerViewAdapterForAllNote extends RecyclerView.Adapter<RecyclerViewAdapterForAllNote.MyViewHolder>{
 
     private final Context context;
     private final ArrayList<String> titleList,noteList;
 
-    CustomAdapterForAllNote(Context context , ArrayList<String> titleList, ArrayList<String> noteList){
+    RecyclerViewAdapterForAllNote(Context context , ArrayList<String> titleList, ArrayList<String> noteList){
         this.context = context;
         this.titleList = titleList;
         this.noteList = noteList;
@@ -71,7 +69,6 @@ public class CustomAdapterForAllNote extends RecyclerView.Adapter<CustomAdapterF
             textViewNote = itemView.findViewById(R.id.textViewNote);
             textViewTitle = itemView.findViewById(R.id.textViewTitle);
             cardView = itemView.findViewById(R.id.cardView);
-
         }
     }
 }

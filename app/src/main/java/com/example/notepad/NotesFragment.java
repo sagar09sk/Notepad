@@ -42,21 +42,18 @@ public class NotesFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_notes, container, false);
 
-
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseFirestore = FirebaseFirestore.getInstance();
         noteList = new ArrayList<>();
         titleList = new ArrayList<>();
 
-
-
         // view notes
         recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        CustomAdapterForAllNote customAdapterForAllNote = new CustomAdapterForAllNote(getActivity(),titleList,noteList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        RecyclerViewAdapterForAllNote recyclerViewAdapterForAllNote = new RecyclerViewAdapterForAllNote(getActivity(),titleList,noteList);
 
         // get notes for firebaseStore
         firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         userID = firebaseAuth.getCurrentUser().getUid();
         firebaseFirestore.collection(userID).get().addOnCompleteListener(task -> {
             if(task.isComplete()){
@@ -64,7 +61,7 @@ public class NotesFragment extends Fragment {
                 for(QueryDocumentSnapshot document: task.getResult()){
                     noteList.add(document.getString("Note"));
                     titleList.add(document.getString("Title"));
-                    customAdapterForAllNote.notifyDataSetChanged();
+                    recyclerViewAdapterForAllNote.notifyDataSetChanged();
 
                 }
             }else{
@@ -72,12 +69,11 @@ public class NotesFragment extends Fragment {
                 Toast.makeText(getActivity(), "failed to get Notes "+task.getException(), Toast.LENGTH_SHORT).show();
             }
         });
+        recyclerView.setAdapter(recyclerViewAdapterForAllNote);
 
 
-        recyclerView.setAdapter(customAdapterForAllNote);
-
-        // add note function
-        buttonAddNote = view.findViewById(R.id.buttonAddNote);
+        // add New note function
+        buttonAddNote = view.findViewById(R.id.buttonAddDay);
         buttonAddNote.setVisibility(View.VISIBLE);
         buttonAddNote.setOnClickListener(v -> {
             startActivity(new Intent(getActivity(), AddNoteActivity.class));

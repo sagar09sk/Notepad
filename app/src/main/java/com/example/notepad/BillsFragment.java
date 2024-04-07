@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -85,14 +84,14 @@ public class BillsFragment extends Fragment {
         //get and set all last bills to RecyclerView
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        CustomAdapterForLastBill customAdapterForLastBill = new CustomAdapterForLastBill(getContext(),userID,profileNameList,dateList,amountList);
+        RecyclerViewAdapterForLastBill recyclerViewAdapterForLastBill = new RecyclerViewAdapterForLastBill(getContext(),userID,profileNameList,dateList,amountList);
         firebaseFirestore.collection("Profiles of "+userID).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     amountList.add(document.getString("Amount"));
                     profileNameList.add(document.getString("Profile Name"));
                     dateList.add(document.getString("Date"));
-                    customAdapterForLastBill.notifyDataSetChanged();
+                    recyclerViewAdapterForLastBill.notifyDataSetChanged();
                 }
             } else {
                 Log.w(TAG, "Error getting documents.", task.getException());
@@ -106,7 +105,7 @@ public class BillsFragment extends Fragment {
             textViewTotalAmount.setText("Total Amount = " + total  +"Rs" );
         });
 
-        recyclerView.setAdapter(customAdapterForLastBill);
+        recyclerView.setAdapter(recyclerViewAdapterForLastBill);
 
 
 

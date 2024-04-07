@@ -13,12 +13,12 @@
         android:layout_margin="7dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/buttonAddNote"
+        android:id="@+id/buttonAddDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="7dp"
         android:contentDescription="@string/notepad"
-        android:src="@drawable/plus"
+        android:src="@drawable/baseline_add_24"
         app:backgroundTint="#5C6BC0" />
 </FrameLayout>

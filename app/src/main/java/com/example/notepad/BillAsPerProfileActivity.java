@@ -30,7 +30,7 @@ public class BillAsPerProfileActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ArrayList<String> dateList,currentList,amountList;
-    CustomAdapterForBillhistory customAdapterForBillhistory;
+    RecyclerViewAdapterForBillHistory recyclerViewAdapterForBillHistory;
     String profileName,date,userID;
     FirebaseFirestore firebaseFirestore;
 
@@ -60,7 +60,7 @@ public class BillAsPerProfileActivity extends AppCompatActivity {
         currentList = new ArrayList<>();
         amountList = new ArrayList<>();
 
-        customAdapterForBillhistory = new CustomAdapterForBillhistory(this,dateList,currentList,amountList);
+        recyclerViewAdapterForBillHistory = new RecyclerViewAdapterForBillHistory(this,dateList,currentList,amountList);
         firebaseFirestore.collection("Profiles of "+userID ).document(profileName)
                 .collection("Bill Data")
                 .get().addOnCompleteListener(task -> {
@@ -69,13 +69,13 @@ public class BillAsPerProfileActivity extends AppCompatActivity {
                             amountList.add(document.getString("Amount"));
                             currentList.add(document.getString("Current Reading"));
                             dateList.add(document.getString("Date"));
-                            customAdapterForBillhistory.notifyDataSetChanged();
+                            recyclerViewAdapterForBillHistory.notifyDataSetChanged();
                         }
                     } else {
                         Log.w(TAG, "Error getting documents.", task.getException());
                     }
                 });
-        recyclerView.setAdapter(customAdapterForBillhistory);
+        recyclerView.setAdapter(recyclerViewAdapterForBillHistory);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 

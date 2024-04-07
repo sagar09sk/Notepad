@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class CustomAdapterForLastBill extends RecyclerView.Adapter<CustomAdapterForLastBill.MyViewHolder> {
+public class RecyclerViewAdapterForLastBill extends RecyclerView.Adapter<RecyclerViewAdapterForLastBill.MyViewHolder> {
 
     private final Context context;
     private final String userID;
@@ -22,7 +22,7 @@ public class CustomAdapterForLastBill extends RecyclerView.Adapter<CustomAdapter
     private final ArrayList<String> dateList;
     private final ArrayList<String> amountList ;
 
-    CustomAdapterForLastBill(Context context , String userID, ArrayList<String> nameList , ArrayList<String> dateList , ArrayList<String> amountList){
+    RecyclerViewAdapterForLastBill(Context context , String userID, ArrayList<String> nameList , ArrayList<String> dateList , ArrayList<String> amountList){
         this.context = context;
         this.userID = userID;
         this.nameList = nameList;

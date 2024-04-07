@@ -1,10 +1,16 @@
 package com.example.notepad;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,6 +80,19 @@ public class FireBaseFireStoreHelper {
                 Toast.makeText(context, "bill updated", Toast.LENGTH_SHORT).show()
         ).addOnFailureListener(e ->
                 Toast.makeText(context, "failed "+ e , Toast.LENGTH_SHORT).show()
+        );
+    }
+
+
+    public void addNewDayInFireStore(Context context, String dayTitle , String dayDate ) {
+        DocumentReference ProfilesCollection = firebaseFirestore.collection("Days of " + userID).document(dayDate);
+        Map<String, Object> profile = new HashMap<>();
+        profile.put("Day Tittle", dayTitle);
+        profile.put("Day Date", dayDate);
+        ProfilesCollection.set(profile).addOnSuccessListener(unused ->
+                Toast.makeText(context, "Days created", Toast.LENGTH_SHORT).show()
+        ).addOnFailureListener(e ->
+                Toast.makeText(context, "failed " + e, Toast.LENGTH_SHORT).show()
         );
     }
 
