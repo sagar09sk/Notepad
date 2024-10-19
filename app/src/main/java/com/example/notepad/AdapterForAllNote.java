@@ -13,12 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class RecyclerViewAdapterForAllNote extends RecyclerView.Adapter<RecyclerViewAdapterForAllNote.MyViewHolder>{
+public class AdapterForAllNote extends RecyclerView.Adapter<AdapterForAllNote.MyViewHolder>{
 
     private final Context context;
     private final ArrayList<String> titleList,noteList;
 
-    RecyclerViewAdapterForAllNote(Context context , ArrayList<String> titleList, ArrayList<String> noteList){
+    AdapterForAllNote(Context context , ArrayList<String> titleList, ArrayList<String> noteList){
         this.context = context;
         this.titleList = titleList;
         this.noteList = noteList;

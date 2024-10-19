@@ -1,39 +1,25 @@
 package com.example.notepad;
 
 import androidx.appcompat.app.AppCompatActivity;
-import android.annotation.SuppressLint;
+
 import android.os.Bundle;
-import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
 import android.content.Intent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.notepad.databinding.ActivityMainBinding;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -94,9 +80,9 @@ public class MainActivity extends AppCompatActivity {
            }else if(id == R.id.dateRange){
                replaceFragment(new DateRangeFragment());
                textViewAdd.setText("Important Days");
-           }else if(id == R.id.event){
-               replaceFragment( new EventFragment());
-               textViewAdd.setText("Events");
+           }else if(id == R.id.expenditure){
+               replaceFragment( new ExpenditureFragment());
+               textViewAdd.setText("Expenditure");
            }
            return true;
         });

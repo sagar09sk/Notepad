@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class RecyclerViewAdapterForDays extends RecyclerView.Adapter<RecyclerViewAdapterForDays.MyViewHolder>{
+public class AdapterForDays extends RecyclerView.Adapter<AdapterForDays.MyViewHolder>{
 
     Context context;
     ArrayList<String> datesList,dayDiffList;
-    RecyclerViewAdapterForDays(Context context , ArrayList<String> datesList,ArrayList<String> dayDiffList) {
+    AdapterForDays(Context context , ArrayList<String> datesList, ArrayList<String> dayDiffList) {
         this.context = context;
         this.datesList = datesList;
         this.dayDiffList = dayDiffList;

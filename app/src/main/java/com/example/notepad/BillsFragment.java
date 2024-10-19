@@ -84,7 +84,7 @@ public class BillsFragment extends Fragment {
         //get and set all last bills to RecyclerView
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        RecyclerViewAdapterForLastBill recyclerViewAdapterForLastBill = new RecyclerViewAdapterForLastBill(getContext(),userID,profileNameList,dateList,amountList);
+        AdapterForLastBill recyclerViewAdapterForLastBill = new AdapterForLastBill(getContext(),userID,profileNameList,dateList,amountList);
         firebaseFirestore.collection("Profiles of "+userID).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {

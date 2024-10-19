@@ -29,4 +29,6 @@
     <string name="current">current</string>
     <string name="unit">unit</string>
     <string name="amount">amount</string>
+    <string name="expense">expanse</string>
+    <string name="expenditure">expenditure</string>
 </resources>

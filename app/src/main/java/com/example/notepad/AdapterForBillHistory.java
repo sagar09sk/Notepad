@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class RecyclerViewAdapterForBillHistory extends RecyclerView.Adapter<RecyclerViewAdapterForBillHistory.MyViewHolder>{
+public class AdapterForBillHistory extends RecyclerView.Adapter<AdapterForBillHistory.MyViewHolder>{
 
     private final Context context;
     private final ArrayList<String> bill_date , bill_current, bill_amount;
 
-    RecyclerViewAdapterForBillHistory(Context context , ArrayList<String> bill_date , ArrayList<String> bill_current , ArrayList<String> bill_amount){
+    AdapterForBillHistory(Context context , ArrayList<String> bill_date , ArrayList<String> bill_current , ArrayList<String> bill_amount){
         this.context = context;
         this.bill_date = bill_date;
 

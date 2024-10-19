@@ -1,35 +1,23 @@
 package com.example.notepad;
 
-import static android.content.ContentValues.TAG;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -45,7 +33,7 @@ public class DateRangeFragment extends Fragment {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
     String userID;
-    RecyclerViewAdapterForDays adapterForDays;
+    AdapterForDays adapterForDays;
 
     public DateRangeFragment() {
         // Required empty public constructor
@@ -64,7 +52,7 @@ public class DateRangeFragment extends Fragment {
 
         recyclerViewDays = view.findViewById(R.id.recyclerViewDays);
         recyclerViewDays.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapterForDays= new RecyclerViewAdapterForDays(getActivity(),daysList,daysDiffList);
+        adapterForDays= new AdapterForDays(getActivity(),daysList,daysDiffList);
 
 
 

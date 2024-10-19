@@ -30,7 +30,7 @@ public class BillAsPerProfileActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ArrayList<String> dateList,currentList,amountList;
-    RecyclerViewAdapterForBillHistory recyclerViewAdapterForBillHistory;
+    AdapterForBillHistory recyclerViewAdapterForBillHistory;
     String profileName,date,userID;
     FirebaseFirestore firebaseFirestore;
 
@@ -60,7 +60,7 @@ public class BillAsPerProfileActivity extends AppCompatActivity {
         currentList = new ArrayList<>();
         amountList = new ArrayList<>();
 
-        recyclerViewAdapterForBillHistory = new RecyclerViewAdapterForBillHistory(this,dateList,currentList,amountList);
+        recyclerViewAdapterForBillHistory = new AdapterForBillHistory(this,dateList,currentList,amountList);
         firebaseFirestore.collection("Profiles of "+userID ).document(profileName)
                 .collection("Bill Data")
                 .get().addOnCompleteListener(task -> {

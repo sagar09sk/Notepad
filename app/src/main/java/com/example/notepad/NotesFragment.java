@@ -48,7 +48,7 @@ public class NotesFragment extends Fragment {
         // view notes
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        RecyclerViewAdapterForAllNote recyclerViewAdapterForAllNote = new RecyclerViewAdapterForAllNote(getActivity(),titleList,noteList);
+        AdapterForAllNote recyclerViewAdapterForAllNote = new AdapterForAllNote(getActivity(),titleList,noteList);
 
         // get notes for firebaseStore
         firebaseFirestore = FirebaseFirestore.getInstance();
