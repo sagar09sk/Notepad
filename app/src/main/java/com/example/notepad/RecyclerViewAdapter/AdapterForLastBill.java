@@ -1,4 +1,4 @@
-package com.example.notepad;
+package com.example.notepad.RecyclerViewAdapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,6 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.notepad.BillAsPerProfileActivity;
+import com.example.notepad.R;
+
 import java.util.ArrayList;
 
 public class AdapterForLastBill extends RecyclerView.Adapter<AdapterForLastBill.MyViewHolder> {
@@ -22,7 +25,7 @@ public class AdapterForLastBill extends RecyclerView.Adapter<AdapterForLastBill.
     private final ArrayList<String> dateList;
     private final ArrayList<String> amountList ;
 
-    AdapterForLastBill(Context context , String userID, ArrayList<String> nameList , ArrayList<String> dateList , ArrayList<String> amountList){
+    public AdapterForLastBill(Context context, String userID, ArrayList<String> nameList, ArrayList<String> dateList, ArrayList<String> amountList){
         this.context = context;
         this.userID = userID;
         this.nameList = nameList;

@@ -1,4 +1,4 @@
-package com.example.notepad;
+package com.example.notepad.RecyclerViewAdapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.notepad.AddNoteActivity;
+import com.example.notepad.CryptoUtils;
+import com.example.notepad.R;
+
 import java.util.ArrayList;
 
 public class AdapterForAllNote extends RecyclerView.Adapter<AdapterForAllNote.MyViewHolder>{
@@ -18,7 +22,7 @@ public class AdapterForAllNote extends RecyclerView.Adapter<AdapterForAllNote.My
     private final Context context;
     private final ArrayList<String> titleList,noteList;
 
-    AdapterForAllNote(Context context , ArrayList<String> titleList, ArrayList<String> noteList){
+    public AdapterForAllNote(Context context, ArrayList<String> titleList, ArrayList<String> noteList){
         this.context = context;
         this.titleList = titleList;
         this.noteList = noteList;
@@ -46,7 +50,7 @@ public class AdapterForAllNote extends RecyclerView.Adapter<AdapterForAllNote.My
 
 
         holder.cardView.setOnClickListener(view -> {
-            Intent intent = new Intent(context,AddNoteActivity.class);
+            Intent intent = new Intent(context, AddNoteActivity.class);
             intent.putExtra("encryptTitle" ,encryptTitle);
             intent.putExtra("encryptNote",encryptNote);
             context.startActivity(intent);

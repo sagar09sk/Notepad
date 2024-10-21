@@ -30,7 +30,7 @@ public class AddExpenditureDialong extends AppCompatDialogFragment {
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
     String userID;
-    int serial = 0;
+    int currentSerial = 0;
     int totalAmount = 0;
 
 
@@ -42,20 +42,21 @@ public class AddExpenditureDialong extends AppCompatDialogFragment {
         userID = firebaseAuth.getCurrentUser().getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
+        String month = getMonthFormat();
+        String year = String.valueOf(getYear());
 
-        firebaseFirestore.collection("Expenditure "+userID).document("Expanses")
+        firebaseFirestore.collection("Expenditure "+userID).document("Expanses of "+ month+year)
                 .get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            String no = document.getString("Serial");
-                            if (no != null) serial = Integer.parseInt(no);
+                            String s = document.getString("Serial");
+                            if (s != null) currentSerial = Integer.parseInt(s);
                             String am = document.getString("Total Amount");
-                            if (no != null) totalAmount = Integer.parseInt(am);
+                            if (s != null) totalAmount = Integer.parseInt(am);
                         }
                     }
                 });
-
 
         AlertDialog.Builder createDialog = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -71,11 +72,12 @@ public class AddExpenditureDialong extends AppCompatDialogFragment {
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         String expanse = edtExpenditure.getText().toString();
                         String amount = String.valueOf(edtAmount.getText());
                         int am = Integer.parseInt(amount);
                         totalAmount = am + totalAmount;
-                        saveExpanse(expanse,amount,serial);
+                        saveExpanse(expanse,amount,currentSerial,month+year);
                     }
                 });
 
@@ -86,20 +88,20 @@ public class AddExpenditureDialong extends AppCompatDialogFragment {
         return createDialog.create();
     }
 
-    private void saveExpanse(String expanse, String amount, int serial) {
+
+    private void saveExpanse(String expanse, String amount, int serial , String month) {
         LocalDate todayDate = LocalDate.now();
         String currentDate = todayDate.toString();
 
-        String month = getMonthFormat();
-        String year = String.valueOf(getYear());
         serial += 1;
         String no = String.valueOf(serial);
         String totalAmountString  = String.valueOf(totalAmount);
 
+
         DocumentReference documentReference = firebaseFirestore
-                .collection("Expenditure "+userID).document("Expanses");
+                .collection("Expenditure "+userID).document("Expanses of "+month);
         Map<String,Object> expanses = new HashMap<>();
-        expanses.put("Month",month+year);
+        expanses.put("Month",month);
         expanses.put("Total Amount",totalAmountString);
         expanses.put("Serial",no);
 
@@ -108,12 +110,13 @@ public class AddExpenditureDialong extends AppCompatDialogFragment {
         });
 
         String number = String.valueOf(serial);
-        DocumentReference documentReference1 = firebaseFirestore.collection("Expenditure "+userID).document("Expanses")
-                .collection(month+year).document(number);
+        DocumentReference documentReference1 = firebaseFirestore.collection("Expenditure "+userID).document("Expanses of "+month)
+                .collection(month).document(number);
         Map<String,Object> data = new HashMap<>();
         data.put("Expanse",expanse);
         data.put("Amount",amount);
         data.put("Date",currentDate);
+        data.put("Serial",number);
         documentReference1.set(data).addOnSuccessListener(unused -> {
 
         });
@@ -129,7 +132,6 @@ public class AddExpenditureDialong extends AppCompatDialogFragment {
         Calendar calendar = Calendar.getInstance();
         return calendar.get(Calendar.YEAR);
     }
-
     private String getMonthFormat() {
          int month = getMonth();
         if (month == 1) return "JANUARY ";
@@ -148,4 +150,6 @@ public class AddExpenditureDialong extends AppCompatDialogFragment {
         return "Null";
 
     }
+
+
 }

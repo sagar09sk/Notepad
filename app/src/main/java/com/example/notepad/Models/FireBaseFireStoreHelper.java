@@ -1,4 +1,4 @@
-package com.example.notepad;
+package com.example.notepad.Models;
 
 import static android.content.ContentValues.TAG;
 

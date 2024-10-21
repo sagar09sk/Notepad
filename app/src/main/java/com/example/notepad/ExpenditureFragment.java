@@ -9,7 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.notepad.Models.ExpenditureModel;
+import com.example.notepad.Models.ExpenseDetailsModel;
+import com.example.notepad.RecyclerViewAdapter.AdapterForExpenditure;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -20,10 +24,13 @@ import java.util.ArrayList;
 public class ExpenditureFragment extends Fragment {
 
     ArrayList<String> expenditureMonthList,amountList;
+    ArrayList<ExpenseDetailsModel> expenseDetails;
+    ArrayList<ExpenditureModel> expenditure;
     RecyclerView expenditureRecycleView;
     FloatingActionButton buttonAddExpenditure;
     FirebaseAuth firebaseAuth;
     String userID;
+
 
     public ExpenditureFragment() {
         // Required empty public constructor
@@ -37,32 +44,54 @@ public class ExpenditureFragment extends Fragment {
 
         expenditureMonthList = new ArrayList<>();
         amountList = new ArrayList<>();
+        expenseDetails = new ArrayList<>();
+        expenditure = new ArrayList<>();
 
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         userID = firebaseAuth.getCurrentUser().getUid();
 
-
+        AdapterForExpenditure adapterForExpenditure = new AdapterForExpenditure(getActivity(),expenditure,expenseDetails);
         expenditureRecycleView = view.findViewById(R.id.recyclerViewExpenditure);
         expenditureRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
-        AdapterForExpenditure recyclerViewAdapterForExpenditure = new AdapterForExpenditure(getActivity(),expenditureMonthList,amountList);
-        expenditureRecycleView.setAdapter(recyclerViewAdapterForExpenditure);
+        expenditureRecycleView.setAdapter(adapterForExpenditure);
+
 
         buttonAddExpenditure = view.findViewById(R.id.buttonAddExpenditure);
         buttonAddExpenditure.setVisibility(View.VISIBLE);
         buttonAddExpenditure.setOnClickListener(v -> {
-            AddExpenditureDialong expenditureDialong = new AddExpenditureDialong();
-            expenditureDialong.show(requireActivity().getSupportFragmentManager()," Add Expenditure " );
+            AddExpenditureDialong expenditureDialog = new AddExpenditureDialong();
+            expenditureDialog.show(requireActivity().getSupportFragmentManager()," Add Expenditure " );
         });
 
         firebaseFirestore.collection("Expenditure "+userID).get()
                 .addOnCompleteListener(task -> {
                     if (task.isComplete()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            expenditureMonthList.add(document.getString("Month"));
+                            expenditure.add(new ExpenditureModel(
+                                    document.getString("Serial"),document.getString("Month"),document.getString("Total Amount")
+                            ));
+
+                            String month = document.getString("Month");
+                            expenditureMonthList.add(month);
                             amountList.add(document.getString("Total Amount"));
-                            recyclerViewAdapterForExpenditure.notifyDataSetChanged();
+
+                            firebaseFirestore.collection("Expenditure "+userID).document("Expanses of "+month)
+                                    .collection(month)
+                                    .get().addOnCompleteListener(task1 -> {
+                                        if (task1.isSuccessful()) {
+                                            for (QueryDocumentSnapshot data : task1.getResult()) {
+                                                expenseDetails.add(new ExpenseDetailsModel(
+                                                    data.getString("Serial"),data.getString("Date"),data.getString("Expanse"),data.getString("Amount")
+                                                ));
+                                                adapterForExpenditure.notifyDataSetChanged();
+
+                                            }
+                                        }
+                                    });
+
                         }
+
                     }
                 });
         return view;

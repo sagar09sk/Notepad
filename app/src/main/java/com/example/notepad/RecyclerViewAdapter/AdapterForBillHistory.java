@@ -1,4 +1,4 @@
-package com.example.notepad;
+package com.example.notepad.RecyclerViewAdapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.notepad.R;
+
 import java.util.ArrayList;
 
 public class AdapterForBillHistory extends RecyclerView.Adapter<AdapterForBillHistory.MyViewHolder>{
@@ -16,7 +18,7 @@ public class AdapterForBillHistory extends RecyclerView.Adapter<AdapterForBillHi
     private final Context context;
     private final ArrayList<String> bill_date , bill_current, bill_amount;
 
-    AdapterForBillHistory(Context context , ArrayList<String> bill_date , ArrayList<String> bill_current , ArrayList<String> bill_amount){
+    public AdapterForBillHistory(Context context, ArrayList<String> bill_date, ArrayList<String> bill_current, ArrayList<String> bill_amount){
         this.context = context;
         this.bill_date = bill_date;
 

@@ -1,4 +1,4 @@
-package com.example.notepad;
+package com.example.notepad.RecyclerViewAdapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,13 +9,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.notepad.R;
+
 import java.util.ArrayList;
 
 public class AdapterForDays extends RecyclerView.Adapter<AdapterForDays.MyViewHolder>{
 
     Context context;
     ArrayList<String> datesList,dayDiffList;
-    AdapterForDays(Context context , ArrayList<String> datesList, ArrayList<String> dayDiffList) {
+    public AdapterForDays(Context context, ArrayList<String> datesList, ArrayList<String> dayDiffList) {
         this.context = context;
         this.datesList = datesList;
         this.dayDiffList = dayDiffList;
