@@ -8,6 +8,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +29,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class BillsFragment extends Fragment {
 
@@ -74,7 +77,10 @@ public class BillsFragment extends Fragment {
             createDialog.setPositiveButton(" Create ", (dialogInterface, i) -> {
                 String createName = editTextCreate.getText().toString();
                 fireBaseFireStoreHelper.createProfileInFirebaseNew(getContext(),createName,currentDate);
-                startActivity(new Intent(getContext(),MainActivity.class));
+
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.frame_layout,new BillsFragment()).commit();
+
             });
             createDialog.setNeutralButton("Cancel",(dialogInterface, i) -> {
                 //cancel
@@ -106,14 +112,9 @@ public class BillsFragment extends Fragment {
             }
             textViewTotalAmount.setText("Total Amount = " + total  +"Rs" );
         });
-
         recyclerView.setAdapter(recyclerViewAdapterForLastBill);
-
-
-
-
-
 
         return view;
     }
+
 }

@@ -22,7 +22,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 
 public class ExpenditureFragment extends Fragment {
-
     ArrayList<String> expenditureMonthList,amountList;
     ArrayList<ExpenseDetailsModel> expenseDetails;
     ArrayList<ExpenditureModel> expenditure;
@@ -30,8 +29,6 @@ public class ExpenditureFragment extends Fragment {
     FloatingActionButton buttonAddExpenditure;
     FirebaseAuth firebaseAuth;
     String userID;
-
-
     public ExpenditureFragment() {
         // Required empty public constructor
     }
@@ -39,9 +36,7 @@ public class ExpenditureFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_expenditure, container, false);
-
         expenditureMonthList = new ArrayList<>();
         amountList = new ArrayList<>();
         expenseDetails = new ArrayList<>();
@@ -71,7 +66,6 @@ public class ExpenditureFragment extends Fragment {
                             expenditure.add(new ExpenditureModel(
                                     document.getString("Serial"),document.getString("Month"),document.getString("Total Amount")
                             ));
-
                             String month = document.getString("Month");
                             expenditureMonthList.add(month);
                             amountList.add(document.getString("Total Amount"));
@@ -85,13 +79,10 @@ public class ExpenditureFragment extends Fragment {
                                                     data.getString("Serial"),data.getString("Date"),data.getString("Expanse"),data.getString("Amount")
                                                 ));
                                                 adapterForExpenditure.notifyDataSetChanged();
-
                                             }
                                         }
                                     });
-
                         }
-
                     }
                 });
         return view;

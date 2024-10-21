@@ -10,10 +10,6 @@
         android:icon="@drawable/baseline_electric_meter_24"
         android:title="Bills" />
     <item
-        android:id="@+id/dateRange"
-        android:icon="@drawable/baseline_date_range_24"
-        android:title="Date Range" />
-    <item
         android:id="@+id/expenditure"
         android:icon="@drawable/baseline_edit_calendar_24"
         android:title="Expenditure" />

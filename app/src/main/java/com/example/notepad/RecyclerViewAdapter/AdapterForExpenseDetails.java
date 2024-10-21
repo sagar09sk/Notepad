@@ -16,10 +16,8 @@ import java.util.ArrayList;
 
 public class AdapterForExpenseDetails extends RecyclerView.Adapter<AdapterForExpenseDetails.MyViewHolder> {
     private final ArrayList<ExpenseDetailsModel> expenseDetails;
-
     public AdapterForExpenseDetails(ArrayList<ExpenseDetailsModel> expenseDetails){
         this.expenseDetails = expenseDetails;
-
     }
     @NonNull
     @Override
@@ -34,8 +32,7 @@ public class AdapterForExpenseDetails extends RecyclerView.Adapter<AdapterForExp
         viewHolder.textViewSerial.setText(model.getSerial());
         viewHolder.textViewDate.setText(model.getDate());
         viewHolder.textViewTitle.setText(model.getExpenseTitle());
-        viewHolder.textViewAmount.setText(model.getExpenseAmount());
-
+        viewHolder.textViewAmount.setText("Rs "+model.getExpenseAmount());
     }
 
     @Override

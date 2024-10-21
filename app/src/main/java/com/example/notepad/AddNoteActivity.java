@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -81,10 +84,10 @@ public class AddNoteActivity extends AppCompatActivity {
         }
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
+
         if(id == R.id.save_note){
             title = editTextTitle.getText().toString().trim();
             noteBody = editTextMultiLine.getText().toString();
@@ -107,14 +110,15 @@ public class AddNoteActivity extends AppCompatActivity {
                 note.put("Note",noteBody);
                 documentReference.set(note).addOnSuccessListener(unused ->{
                     Toast.makeText(this, " saved ", Toast.LENGTH_SHORT).show();
+
+
+
                     Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-
                     finish();
                 });
             }
-
         }
 
         if(id == R.id.delete_note){
@@ -124,9 +128,14 @@ public class AddNoteActivity extends AppCompatActivity {
             builder.setNeutralButton(" Cancel ", (dialogInterface, i) -> {
             });
             builder.setPositiveButton(" Delete ", (dialogInterface, i) -> {
-                FirebaseFirestore.getInstance().collection(userID).document(encryptTitleIntent).delete().addOnSuccessListener(unused -> {
-                    startActivity(new Intent(this ,MainActivity.class));
-                    finish();
+                FirebaseFirestore.getInstance().collection(userID).document(encryptTitleIntent).delete()
+                        .addOnSuccessListener(unused -> {
+
+                            Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+
                 });
             });
             builder.create().show();
@@ -139,15 +148,18 @@ public class AddNoteActivity extends AppCompatActivity {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_SUBJECT ,"Note");
             intent.putExtra(Intent.EXTRA_TEXT ,decrypt);
             startActivity(Intent.createChooser(intent,"Share"));
-
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
+
+
 }

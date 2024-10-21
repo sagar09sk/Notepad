@@ -74,19 +74,15 @@ public class MainActivity extends AppCompatActivity {
            if (id == R.id.notes){
                 replaceFragment(new NotesFragment());
                textViewAdd.setText("Notes");
-            }else if(id == R.id.bills){
+           }else if(id == R.id.bills){
                replaceFragment(new BillsFragment());
                textViewAdd.setText("Electricity Bills");
-           }else if(id == R.id.dateRange){
-               replaceFragment(new DateRangeFragment());
-               textViewAdd.setText("Important Days");
            }else if(id == R.id.expenditure){
                replaceFragment( new ExpenditureFragment());
                textViewAdd.setText("Expenditure");
            }
            return true;
         });
-
 
 
     }
@@ -97,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout,fragment);
         fragmentTransaction.commit();
-
     }
 
     @Override

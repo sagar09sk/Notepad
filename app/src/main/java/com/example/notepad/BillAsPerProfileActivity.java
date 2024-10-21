@@ -18,6 +18,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -105,9 +108,13 @@ public class BillAsPerProfileActivity extends AppCompatActivity {
             builder.setMessage("Are you sure you want delete ?");
             builder.setPositiveButton("Yes", (dialogInterface, i) -> {
                 //delete operation
-                firebaseFirestore.collection("Profiles of "+userID ).document(profileName).delete().addOnSuccessListener(unused -> {
+                firebaseFirestore.collection("Profiles of "+userID ).document(profileName).delete()
+                        .addOnSuccessListener(unused -> {
                     Toast.makeText(this, "deletion is successful", Toast.LENGTH_SHORT).show();
+
                     startActivity(new Intent(this,MainActivity.class) );
+                    finish();
+
                 }).addOnFailureListener(e ->
                         Toast.makeText(this, " failed " +e , Toast.LENGTH_SHORT).show()
                 );

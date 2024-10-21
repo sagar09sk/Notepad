@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -12,6 +13,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,7 +36,6 @@ public class AddExpenditureDialong extends AppCompatDialogFragment {
     String userID;
     int currentSerial = 0;
     int totalAmount = 0;
-
 
     @NonNull
     @Override
@@ -61,6 +64,8 @@ public class AddExpenditureDialong extends AppCompatDialogFragment {
         AlertDialog.Builder createDialog = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.add_expenditure_dialog_layout,null);
+        edtExpenditure = view.findViewById(R.id.expenditureTitle);
+        edtAmount = view.findViewById(R.id.expenditureAmount);
         createDialog.setView(view)
                 .setTitle(" Add Expenditure ")
                 .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
@@ -72,20 +77,26 @@ public class AddExpenditureDialong extends AppCompatDialogFragment {
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                         String expanse = edtExpenditure.getText().toString();
                         String amount = String.valueOf(edtAmount.getText());
+                        if(TextUtils.isEmpty(expanse)){ return; }
+                        if(TextUtils.isEmpty(amount)){ return; }
                         int am = Integer.parseInt(amount);
                         totalAmount = am + totalAmount;
                         saveExpanse(expanse,amount,currentSerial,month+year);
+
+                        replaceFragment(new ExpenditureFragment());
+
+
                     }
                 });
-
-        edtExpenditure = view.findViewById(R.id.expenditureTitle);
-        edtAmount = view.findViewById(R.id.expenditureAmount);
-
-
         return createDialog.create();
+    }
+
+    private void replaceFragment(Fragment fragment){
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout,fragment);
+        fragmentTransaction.commit();
     }
 
 

@@ -10,37 +10,56 @@
         layout="@layout/toolbar_layout"
         android:id="@+id/toolbar"/>
 
-    <EditText
-        android:id="@+id/editTextTittle"
-        android:layout_width="0dp"
-        android:layout_height="70dp"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/custom_note_view"
-        android:fontFamily="@font/aclonica"
-        android:hint="@string/title"
-        android:inputType="text"
-        android:maxLength="24"
-        android:textSize="27sp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="4dp"
+        app:cardCornerRadius="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/editTextMultiLine"
-        android:layout_width="0dp"
+        <EditText
+            android:id="@+id/editTextTittle"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/custom_note_view"
+            android:fontFamily="@font/aclonica"
+            android:hint="@string/title"
+            android:inputType="text"
+            android:maxLength="24"
+            android:textSize="27sp" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView1"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="10dp"
-        android:autofillHints="@string/note"
-        android:background="@drawable/custom_note_view"
-        android:ems="10"
-        android:gravity="start|top"
-        android:hint="Note something down"
-        android:inputType="textMultiLine"
-        android:isScrollContainer="true"
+        android:layout_margin="4dp"
+        app:cardCornerRadius="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTittle" />
+        app:layout_constraintTop_toBottomOf="@+id/cardView2">
+
+        <EditText
+            android:id="@+id/editTextMultiLine"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:autofillHints="@string/note"
+            android:background="@drawable/custom_note_view"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="Note something down"
+            android:inputType="textMultiLine"
+            android:isScrollContainer="true" />
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

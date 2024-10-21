@@ -18,17 +18,14 @@ import com.example.notepad.R;
 import java.util.ArrayList;
 
 public class AdapterForExpenditure extends RecyclerView.Adapter<AdapterForExpenditure.MyViewHolder>{
-
     private final Context context;
     private final ArrayList<ExpenditureModel> expenditure;
     private final ArrayList<ExpenseDetailsModel> expenseDetails;
-
 
     public AdapterForExpenditure(Context context, ArrayList<ExpenditureModel> expenditure, ArrayList<ExpenseDetailsModel> expenseDetails){
         this.context = context;
         this.expenditure = expenditure;
         this.expenseDetails = expenseDetails;
-
     }
 
     @NonNull
@@ -43,16 +40,12 @@ public class AdapterForExpenditure extends RecyclerView.Adapter<AdapterForExpend
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         ExpenditureModel model = expenditure.get(position);
         holder.textViewMonth.setText(model.getMonth());
-        holder.textViewAmount.setText(model.getTotalAmount());
-
-//        String totalAmount = amountList.get(position);
-//        holder.textViewAmount.setText("Rs " + totalAmount);
+        holder.textViewAmount.setText("Rs "+ model.getTotalAmount());
 
         AdapterForExpenseDetails nestedAdapter = new AdapterForExpenseDetails(expenseDetails);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
         holder.recyclerView.setAdapter(nestedAdapter);
         nestedAdapter.notifyDataSetChanged();
-
     }
 
     @Override
@@ -61,7 +54,6 @@ public class AdapterForExpenditure extends RecyclerView.Adapter<AdapterForExpend
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
-
         TextView  textViewMonth ,textViewAmount;
         RecyclerView recyclerView;
         public MyViewHolder(@NonNull View itemView) {
