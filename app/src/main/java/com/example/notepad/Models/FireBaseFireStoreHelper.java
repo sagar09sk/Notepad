@@ -83,17 +83,4 @@ public class FireBaseFireStoreHelper {
         );
     }
 
-
-    public void addNewDayInFireStore(Context context, String dayTitle , String dayDate ) {
-        DocumentReference ProfilesCollection = firebaseFirestore.collection("Days of " + userID).document(dayDate);
-        Map<String, Object> profile = new HashMap<>();
-        profile.put("Day Tittle", dayTitle);
-        profile.put("Day Date", dayDate);
-        ProfilesCollection.set(profile).addOnSuccessListener(unused ->
-                Toast.makeText(context, "Days created", Toast.LENGTH_SHORT).show()
-        ).addOnFailureListener(e ->
-                Toast.makeText(context, "failed " + e, Toast.LENGTH_SHORT).show()
-        );
-    }
-
 }

@@ -22,4 +22,11 @@
         android:src="@drawable/baseline_add_24"
         app:backgroundTint="#5C6BC0" />
 
+    <ProgressBar
+        android:id="@+id/progressBarExpanse"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
 </FrameLayout>
