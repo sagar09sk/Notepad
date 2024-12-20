@@ -12,7 +12,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.notepad.AddNoteActivity;
-import com.example.notepad.CryptoUtils;
 import com.example.notepad.R;
 
 import java.util.ArrayList;
@@ -39,20 +38,18 @@ public class AdapterForAllNote extends RecyclerView.Adapter<AdapterForAllNote.My
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        String encryptTitle = titleList.get(position);
-        String encryptNote = noteList.get(position);
-        try {
-            holder.textViewTitle.setText(CryptoUtils.decrypt(encryptTitle));
-            holder.textViewNote.setText(CryptoUtils.decrypt(encryptNote));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        String title = titleList.get(position);
+        String note = noteList.get(position);
+
+        holder.textViewTitle.setText(title);
+        holder.textViewNote.setText(note);
+
 
 
         holder.cardView.setOnClickListener(view -> {
             Intent intent = new Intent(context, AddNoteActivity.class);
-            intent.putExtra("encryptTitle" ,encryptTitle);
-            intent.putExtra("encryptNote",encryptNote);
+            intent.putExtra("Title" ,title);
+            intent.putExtra("Note",note);
             context.startActivity(intent);
         });
 

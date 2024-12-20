@@ -66,6 +66,7 @@ public class NotesFragment extends Fragment {
         userID = firebaseAuth.getCurrentUser().getUid();
 
         firebaseFirestore.collection(userID)
+                .orderBy("Note")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

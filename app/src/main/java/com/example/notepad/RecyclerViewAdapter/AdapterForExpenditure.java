@@ -25,14 +25,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class AdapterForExpenditure extends RecyclerView.Adapter<AdapterForExpenditure.MyViewHolder>{
+public class AdapterForExpenditure extends RecyclerView.Adapter<AdapterForExpenditure.MyViewHolder> {
     private final Context context;
     private final ArrayList<ExpenditureModel> expenditure;
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     String userID = firebaseAuth.getCurrentUser().getUid();
 
-    public AdapterForExpenditure(Context context, ArrayList<ExpenditureModel> expenditure){
+    public AdapterForExpenditure(Context context, ArrayList<ExpenditureModel> expenditure) {
         this.context = context;
         this.expenditure = expenditure;
     }
@@ -41,7 +41,7 @@ public class AdapterForExpenditure extends RecyclerView.Adapter<AdapterForExpend
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.expenditure_row_layout,parent,false);
+        View view = inflater.inflate(R.layout.expenditure_row_layout, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -49,14 +49,7 @@ public class AdapterForExpenditure extends RecyclerView.Adapter<AdapterForExpend
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         ExpenditureModel model = expenditure.get(position);
         holder.textViewMonth.setText(model.getMonth());
-        holder.textViewAmount.setText("Rs "+ model.getTotalAmount());
-
-//        expenseDetails = new ArrayList<>();
-//        expenseDetails.add(new ExpenseDetailsModel("1","10", "abc","100"));
-//        expenseDetails.add(new ExpenseDetailsModel("2","11", "def","200"));
-//        expenseDetails.add(new ExpenseDetailsModel("3","12", "ijk","300"));
-//        expenseDetails.add(new ExpenseDetailsModel("4","13", "lmn","400"));
-
+        holder.textViewAmount.setText("Rs " + model.getTotalAmount());
 
         ArrayList<ExpenseDetailsModel> expenseDetails = new ArrayList<>();
         firebaseFirestore.collection("Expenditure " + userID)
@@ -81,9 +74,6 @@ public class AdapterForExpenditure extends RecyclerView.Adapter<AdapterForExpend
                         }
                     }
                 });
-//        AdapterForExpenseDetails nestedAdapter = new AdapterForExpenseDetails(expenseDetails);
-//        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-//        holder.recyclerView.setAdapter(nestedAdapter);
     }
 
     @Override
@@ -91,9 +81,10 @@ public class AdapterForExpenditure extends RecyclerView.Adapter<AdapterForExpend
         return expenditure.size();
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView  textViewMonth ,textViewAmount;
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView textViewMonth, textViewAmount;
         RecyclerView recyclerView;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewMonth = itemView.findViewById(R.id.textViewMonth);

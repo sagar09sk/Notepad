@@ -32,8 +32,8 @@ public class AddNoteActivity extends AppCompatActivity {
     FirebaseFirestore firebaseFirestore;
     EditText editTextTitle,editTextMultiLine;
     String userID;
-    String encryptNoteIntent;
-    String encryptTitleIntent;
+    String noteIntent;
+    String titleIntent;
     String title;
     String noteBody;
     Boolean editNote;
@@ -55,20 +55,17 @@ public class AddNoteActivity extends AppCompatActivity {
         userID = firebaseAuth.getCurrentUser().getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        encryptTitleIntent = getIntent().getStringExtra("encryptTitle");
-        encryptNoteIntent = getIntent().getStringExtra("encryptNote");
-        if(encryptTitleIntent == null){
+        titleIntent = getIntent().getStringExtra("Title");
+        noteIntent = getIntent().getStringExtra("Note");
+        if(titleIntent == null){
             textViewAdd.setText("Add New Note");
             editNote = false;
 
-        }
-        else{
-            try {
-                editTextTitle.setText(CryptoUtils.decrypt(encryptTitleIntent));
-                editTextMultiLine.setText(CryptoUtils.decrypt(encryptNoteIntent));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        } else {
+
+            editTextTitle.setText(titleIntent);
+            editTextMultiLine.setText(noteIntent);
+
             textViewAdd.setText("Edit Note");
             editTextTitle.setFocusable(false);
             editNote = true;
@@ -94,16 +91,6 @@ public class AddNoteActivity extends AppCompatActivity {
             if(TextUtils.isEmpty(title)){
                 editTextTitle.setError("Title is Required");
             }else {
-                try {
-                    if(encryptTitleIntent == null){
-                        title = CryptoUtils.encrypt(title);
-                    }else{
-                        title = encryptTitleIntent;
-                    }
-                    noteBody = CryptoUtils.encrypt(noteBody);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
                 DocumentReference documentReference = firebaseFirestore.collection(userID).document(title);
                 Map<String,Object> note = new HashMap<>();
                 note.put("Title",title);
@@ -128,7 +115,7 @@ public class AddNoteActivity extends AppCompatActivity {
             builder.setNeutralButton(" Cancel ", (dialogInterface, i) -> {
             });
             builder.setPositiveButton(" Delete ", (dialogInterface, i) -> {
-                FirebaseFirestore.getInstance().collection(userID).document(encryptTitleIntent).delete()
+                FirebaseFirestore.getInstance().collection(userID).document(titleIntent).delete()
                         .addOnSuccessListener(unused -> {
 
                             Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
@@ -142,16 +129,11 @@ public class AddNoteActivity extends AppCompatActivity {
         }
 
         if(id == R.id.share_note){
-            String decrypt;
-            try {
-                decrypt = CryptoUtils.decrypt(encryptNoteIntent);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_SUBJECT ,"Note");
-            intent.putExtra(Intent.EXTRA_TEXT ,decrypt);
+            intent.putExtra(Intent.EXTRA_TEXT ,noteIntent);
             startActivity(Intent.createChooser(intent,"Share"));
         }
 
