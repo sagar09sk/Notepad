@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -63,12 +64,13 @@ public class ExpenditureFragment extends Fragment {
         buttonAddExpenditure = view.findViewById(R.id.buttonAddExpenditure);
         buttonAddExpenditure.setVisibility(View.VISIBLE);
         buttonAddExpenditure.setOnClickListener(v -> {
-            AddExpenditureDialong expenditureDialog = new AddExpenditureDialong();
+            AddExpenditureDialog expenditureDialog = new AddExpenditureDialog();
             expenditureDialog.show(requireActivity().getSupportFragmentManager()," Add Expenditure " );
         });
 
 
         firebaseFirestore.collection("Expenditure " + userID)
+                .orderBy("Time", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

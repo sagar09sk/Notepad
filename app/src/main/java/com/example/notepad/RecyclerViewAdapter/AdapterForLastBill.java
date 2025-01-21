@@ -79,7 +79,7 @@ public class AdapterForLastBill extends RecyclerView.Adapter<AdapterForLastBill.
             textViewName = itemView.findViewById(R.id.textViewName);
             textViewDate = itemView.findViewById(R.id.textViewDate);
             textViewAmount = itemView.findViewById(R.id.textViewAmount);
-            cardView = itemView.findViewById(R.id.cardView);
+            cardView = itemView.findViewById(R.id.cardViewExpense);
         }
     }
 }

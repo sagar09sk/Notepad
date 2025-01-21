@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.notepad.Models.DateFormatModel;
 import com.example.notepad.Models.ExpenditureModel;
 import com.example.notepad.Models.ExpenseDetailsModel;
 import com.example.notepad.R;
@@ -32,6 +33,9 @@ public class AdapterForExpenditure extends RecyclerView.Adapter<AdapterForExpend
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     String userID = firebaseAuth.getCurrentUser().getUid();
 
+    DateFormatModel dateFormat = new DateFormatModel();
+    String monthYear = dateFormat.getMonthFormat() + dateFormat.getYear();
+
     public AdapterForExpenditure(Context context, ArrayList<ExpenditureModel> expenditure) {
         this.context = context;
         this.expenditure = expenditure;
@@ -50,30 +54,56 @@ public class AdapterForExpenditure extends RecyclerView.Adapter<AdapterForExpend
         ExpenditureModel model = expenditure.get(position);
         holder.textViewMonth.setText(model.getMonth());
         holder.textViewAmount.setText("Rs " + model.getTotalAmount());
+        Boolean[] isOpen = {false};
+
 
         ArrayList<ExpenseDetailsModel> expenseDetails = new ArrayList<>();
-        firebaseFirestore.collection("Expenditure " + userID)
-                .document("Expanses of " + model.getMonth())
-                .collection(model.getMonth())
-                .orderBy("Date", Query.Direction.DESCENDING)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        AdapterForExpenseDetails nestedAdapter = new AdapterForExpenseDetails(expenseDetails);
+        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        holder.recyclerView.setAdapter(nestedAdapter);
+
+        //open current month expanse details
+        if (monthYear.equals(model.getMonth())) {
+            firebaseFirestore.collection("Expenditure " + userID).document("Expanses of " + model.getMonth()).collection(model.getMonth()).orderBy("Date", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            expenseDetails.add(new ExpenseDetailsModel(document.getString("Serial"), document.getString("Date"), document.getString("Expanse"), document.getString("Amount")));
+                        }
+                        nestedAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+            isOpen[0] = true;
+        }
+
+        //if click on cardView
+        holder.cardView.setOnClickListener(v -> {
+            if (isOpen[0]) {
+                isOpen[0] = false;
+                expenseDetails.clear();
+                nestedAdapter.notifyDataSetChanged();
+
+
+            } else {
+                firebaseFirestore.collection("Expenditure " + userID).document("Expanses of " + model.getMonth()).collection(model.getMonth()).orderBy("Date", Query.Direction.DESCENDING).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                expenseDetails.add(new ExpenseDetailsModel(
-                                        document.getString("Serial"), document.getString("Date"), document.getString("Expanse"), document.getString("Amount")
-                                ));
+                                expenseDetails.add(new ExpenseDetailsModel(document.getString("Serial"), document.getString("Date"), document.getString("Expanse"), document.getString("Amount")));
                             }
-
-                            AdapterForExpenseDetails nestedAdapter = new AdapterForExpenseDetails(expenseDetails);
-                            holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-                            holder.recyclerView.setAdapter(nestedAdapter);
-
+                            nestedAdapter.notifyDataSetChanged();
                         }
                     }
                 });
+                isOpen[0] = true;
+            }
+
+
+        });
+
     }
 
     @Override
@@ -84,12 +114,16 @@ public class AdapterForExpenditure extends RecyclerView.Adapter<AdapterForExpend
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView textViewMonth, textViewAmount;
         RecyclerView recyclerView;
+        CardView cardView;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewMonth = itemView.findViewById(R.id.textViewMonth);
             textViewAmount = itemView.findViewById(R.id.textViewAmount);
             recyclerView = itemView.findViewById(R.id.recyclerViewDetail);
+            cardView = itemView.findViewById(R.id.cardViewExpense);
         }
     }
+
+
 }

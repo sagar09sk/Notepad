@@ -69,7 +69,7 @@ public class AdapterForAllNote extends RecyclerView.Adapter<AdapterForAllNote.My
             super(itemView);
             textViewNote = itemView.findViewById(R.id.textViewNote);
             textViewTitle = itemView.findViewById(R.id.textViewTitle);
-            cardView = itemView.findViewById(R.id.cardView);
+            cardView = itemView.findViewById(R.id.cardViewExpense);
         }
     }
 }
