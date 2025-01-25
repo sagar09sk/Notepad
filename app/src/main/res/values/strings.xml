@@ -22,7 +22,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="reading">reading</string>
     <string name="name">name</string>
-    <string name="blank">name</string>
+    <string name="blank">Loading</string>
     <string name="date">date</string>
     <string name="previous">previous</string>
     <string name="rate">rate</string>

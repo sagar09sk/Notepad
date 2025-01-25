@@ -7,11 +7,4 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:title="Delete Profile" />
-    <item
-        android:id="@+id/add_new_bill"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:icon="@drawable/plus_account"
-        android:title="Add New Bill"
-        app:showAsAction="ifRoom" />
 </menu>

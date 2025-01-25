@@ -8,21 +8,20 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
 import com.example.notepad.Models.DateFormatModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,31 +66,33 @@ public class AddExpenditureDialog extends AppCompatDialogFragment {
         View view = inflater.inflate(R.layout.add_expenditure_dialog_layout, null);
         edtExpenditure = view.findViewById(R.id.expenditureTitle);
         edtAmount = view.findViewById(R.id.expenditureAmount);
-        createDialog.setView(view).setTitle(" Add Expenditure ").setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        }).setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String expanse = edtExpenditure.getText().toString();
-                String amount = String.valueOf(edtAmount.getText());
-                if (TextUtils.isEmpty(expanse)) {
-                    return;
-                }
-                if (TextUtils.isEmpty(amount)) {
-                    return;
-                }
-                int am = Integer.parseInt(amount);
-                totalAmount = am + totalAmount;
-                saveExpanse(expanse, amount, currentSerial, monthYear, timeForOrder);
-
-                replaceFragment(new ExpenditureFragment());
+        edtExpenditure.requestFocus();
+        createDialog.setView(view).setTitle(" Add Expenditure ")
 
 
-            }
-        });
+                .setOnCancelListener(dialog -> {
+                    Toast.makeText(getContext(), "cancel", Toast.LENGTH_SHORT).show();
+                })
+
+                .setNeutralButton("Cancel", (dialog, which) -> {
+
+                }).setPositiveButton("Save", (dialog, which) -> {
+                    String expanse = edtExpenditure.getText().toString();
+                    String amount = String.valueOf(edtAmount.getText());
+                    if (TextUtils.isEmpty(expanse)) {
+                        return;
+                    }
+                    if (TextUtils.isEmpty(amount)) {
+                        return;
+                    }
+                    int am = Integer.parseInt(amount);
+                    totalAmount = am + totalAmount;
+                    saveExpanse(expanse, amount, currentSerial, monthYear, timeForOrder);
+
+                    replaceFragment(new ExpenditureFragment());
+
+
+                });
         return createDialog.create();
     }
 
@@ -133,5 +134,6 @@ public class AddExpenditureDialog extends AppCompatDialogFragment {
 
         });
     }
+
 
 }

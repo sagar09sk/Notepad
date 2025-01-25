@@ -92,17 +92,19 @@ public class SignUpActivity extends AppCompatActivity {
 
                             //send verification email
                             FirebaseUser user = firebaseAuth.getCurrentUser();
-                            user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Toast.makeText(SignUpActivity.this, "Verification Email has been sent. ", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                            if (user != null) {
+                                user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(SignUpActivity.this, "Verification Email has been sent. ", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
 
                             startActivity(new Intent(getApplicationContext(),MainActivity.class));
                             finish();
                         }else{
-                            Toast.makeText(SignUpActivity.this, "Error ! "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUpActivity.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
                         }
                     }
